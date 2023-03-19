@@ -1,0 +1,121 @@
+body{
+    width: 100%;
+    overflow-x: hidden;
+}
+
+
+.sidebarcol{
+    min-height: 100vh;
+    height: auto;
+    padding-top: 15px;
+    padding-left: 30px !important;
+}
+
+.filetype{
+   display: block;
+}
+.uploadwrapperdesign{
+    width: 100%;
+    height: 110px;
+    border: dotted 5px #AB8EED;
+    border-bottom: none;
+}.uploadicondesign{
+    font-size: 70px;
+    font-family: 'Montserrat', sans-serif;
+    color: #AB8EED;
+    text-align: center;
+}.progress{
+    height: 5px !important;
+}.progress-bar{
+    width: 100%;
+    background-color: #AB8EED !important;
+}
+
+
+.main-container{
+    width: 92%;
+    margin: auto;
+    padding-top: 40px;
+}.resultscontainer{
+    background-color: #E7DAEC;
+    padding: 30px;
+}
+
+
+.MENUtitle{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #AB8EED;
+}.pagetitle{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+}.inputlabel{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    line-height: 5px;
+}.inputlabel2{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}.resultlabel1{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 17px;
+    color: #07D523;
+}.resultlabel2{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 17px;
+    color:darkred;
+}.menulink{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+
+
+
+.checkbtn{
+    width: 180px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    height: 40px;
+    background-color:#54389E;
+    border: none;
+    color: white;
+    float: right;
+    margin: 5px;
+}
+.inputclass{
+    height: 40px;
+    width: 100%;
+    padding:5px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    border: solid 1px #C3C3C3;
+}.inputclass:focus{
+    outline: none;
+}
+
+
+
+
+/*this is for popups*/
+.mainpopupwrapper{
+    background-color: white;
+    box-shadow: 1px 7px 16px -5px rgba(150,150,150,0.75);
+    -webkit-box-shadow: 1px 7px 16px -5px rgba(150,150,150,0.75);
+    -moz-box-shadow: 1px 7px 16px -5px rgba(150,150,150,0.75);
+    height: 50px;
+    width: 300px;
+    position: fixed;
+    text-align: center;
+    top: 10px;
+    right: 20px;
+    padding-top: 15px;
+    background-color: #AEF2EB;
+}.popuptext{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    text-align: center;
+    color: #4F6865;
+}
