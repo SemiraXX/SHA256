@@ -10,7 +10,6 @@
 </div>   
 @endforeach
 
-
 <script>
 $(window).on("load", function () {
 $( "div.okay" ).fadeIn(200 ).delay(1200).fadeOut( 2000 );

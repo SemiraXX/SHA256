@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <link href="/css/css1.css" rel="stylesheet">
-  <link href="/css/loader.css" rel="stylesheet">
   @include('bootstrap.main')
 </head>
 <body>
@@ -21,52 +20,54 @@
     @include('popups')
     <div class="main-container">
     <br>
-        <p class="pagetitle">Saved Files</p>
-        <p class="inputlabel">List of original files in Argon2id format</p>
+        <p class="pagetitle">Reports</p>
+        <p class="inputlabel">Generated reports from checked file</p>
         <br>
         <div class="input-group teamgroupdiv">
-        <button type="submit" class="upload-fille-button"><i class="fa fa-plus" aria-hidden="true"></i> Upload New</button>
+        <button type="submit" class="add-team-button checkfile"> Check new file </button>
         <input type="text" class="searchinput" placeholder="Type Here" name="search">
         </div>
+
+     
         <table class="table-main">
         <thead>
             <tr>
             <th>ID</th>
-            <th>File ID</th>
-            <th>Hash Code</th>
-            <th style="width:80px;"></th>
-            <th style="width:80px;"></th>
+            <th>File</th>
+            <th>File SHA256</th>
+            <th>Original File</th>
+            <th>Remarks</th>
+            <th style="width:100px">Date</th>
+            <th> </th>
             </tr>
         </thead>
         <tbody>
-        <?php $files = DB::table('tbl_savedfiles')->orderby('id', 'desc')->get(); ?>
-          @if($files)
-            @foreach($files as $file)
+        <?php $reports = DB::table('tbl_reports')->orderby('id', 'Desc')->get(); ?>
+          @if($reports)
+            @foreach($reports as $report)
             <tr>
-            <td>{{$file->id}}</td>
-            <td>{{$file->fileID}}</td>
-            <td>{{$file->SHA256Argon2}}</td>
-            <td><button type="button" id="{{$file->id}}" class="edit-account-button"> Edit </button></td>
-            <td><button type="button" id="{{$file->id}}" class="delete-account-button"> Delete </button></td>
+            <td>{{$report->id}}</td>
+            <td>{{$report->FileUploaded}}</td>
+            <td>{{$report->FileSHA256value}}</td>
+            <td>{{$report->OriginalFileID}}</td>
+            <td>{{$report->Remarks}}</td>
+            <td>{{$report->created_at}}</td>
+            <td><button type="button" id="{{$report->id}}" class="view-report-button"> view </button></td>
             </tr>
             @endforeach
           @else
           @endif
         </tbody>
         </table>
-        <br>
-
+        <br><br>
     </div>
 
   </div>
 
 </div>
 
-
-
-@include('modals.upload')
+@include('modals.report')
 <script src="/js/modal.js"></script>
-<script src="/js/sha256.js"></script>
 
 </body>
 </html>

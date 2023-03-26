@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\savedfiles;
+use App\Models\reports;
+use App\Models\actiontrail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +24,7 @@ class checkfilecontroller extends Controller
 
         #get file hash value
         $filehashcode = $request->input('filehashcode');
+
         #decode original file from argon2 to sha256
         $originalfile = $request->input('originalfile');
         $fileselector = $request->input('fileselector');
@@ -38,15 +41,44 @@ class checkfilecontroller extends Controller
             if(password_verify($filehashcode, $originalfile)){
 
                 $result = "<p class='resultlabel1'><strong>Remarks:</strong> File is authentic</p>";
+                $remarks = "File is authentic";
+                $mark = 1;
             }
             else
             {
                 $result = "<p class='resultlabel2'><strong>Remarks:</strong> File is NOT authentic</p>";
+                $remarks = "File is NOT authentic";
+                $mark = 0;
+            }
+
+            #get user name
+            if(session()->has('systemsession'))
+            {
+                $account = DB::table('tbl_useraccounts')->where('id', '=', session('systemsession'))->first();
+                $postedBy = $account->usr_name;
+            }
+            else
+            {
+                $postedBy = "000000000";
             }
 
             $date = NOW();
             $ip = $request->ip();
             $browser = $request->userAgent();
+
+            #this is save report in DB
+            $reports = new reports([
+                'FileUploaded' => $fileselector,
+                'FileSHA256value' => $filehashcode,
+                'OriginalFileID'=> $originalfileID,
+                'Admin' => $postedBy,
+                'Ip_add' => $ip,
+                'Http_browser' => $browser,
+                'Result' => $mark,
+                'Remarks' => $remarks
+            ]);
+            $reports->save();
+
 
             #validate
             echo "
@@ -62,7 +94,7 @@ class checkfilecontroller extends Controller
                 <strong>Outputs</strong><br>
                 <strong>F1 SHA256:</strong> $filehashcode <br>
                 <strong>Orginal file ID:</strong> $originalfileID <br>
-                <strong>Admin:</strong> Maiky Belmonte <br>
+                <strong>Admin:</strong> $postedBy <br>
                 <strong>IP Address:</strong> $ip <br>
                 <strong>Browser:</strong> $browser <br>
                 <br>
@@ -71,6 +103,15 @@ class checkfilecontroller extends Controller
 
             </div>
             ";
+
+            #actiontrail
+            $actiontrail = new actiontrail([
+                'user_id' => $postedBy,
+                'action_taken' => "Check ".$fileselector. " file aunthenticity to ".$originalfileID. " with remarks: (".$remarks.")",
+                'ip_add' => $ip,
+                'http_browser' => $browser
+            ]);
+            $actiontrail->save(); 
 
             #end
 

@@ -14,7 +14,6 @@ class savedfiles extends Model
     protected $fillable = [
         'fileID',
         'fileName',
-        'fileUrl',
         'fileCateg',
         'SHA256Argon2',
         'postedBy',
