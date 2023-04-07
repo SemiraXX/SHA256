@@ -5,6 +5,7 @@ use App\Http\Controllers\uploadcontroller;
 use App\Http\Controllers\checkfilecontroller;
 use App\Http\Controllers\usercontroller;
 use App\Http\Controllers\reportcontroller;
+use App\Http\Controllers\export;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,13 +20,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Categories
-Route::get('/', function () {return view('dashboard');});
+Route::get('/', [checkfilecontroller::class,'viewcheckfileasguest'])->name('index');
 Route::get('/viewReport',[reportcontroller::class,'viewreport']);
 
-
-
-Route::get('/Check/File',[checkfilecontroller::class,'viewcheckfile'])->name('index');
+Route::get('/Dashboard', [checkfilecontroller::class,'dashboardview']);
+Route::get('/Check/File',[checkfilecontroller::class,'viewcheckfile'])->name('checkfile');
 Route::get('/File/Upload', function () {return view('uploadfile');});
+
+Route::get('/Export/Report',[export::class,'exportreports'])->name('direct.export');
+Route::get('/Sort/Report',[checkfilecontroller::class,'sortreportsdashboard'])->name('sort.export');
+
 
 
 //get hash code using ajax

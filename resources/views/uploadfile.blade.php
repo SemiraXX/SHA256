@@ -33,7 +33,9 @@
             <tr>
             <th>ID</th>
             <th>File ID</th>
+            <th>File Name</th>
             <th>Hash Code</th>
+            <th>File Type</th>
             <th style="width:80px;"></th>
             <th style="width:80px;"></th>
             </tr>
@@ -42,10 +44,13 @@
         <?php $files = DB::table('tbl_savedfiles')->orderby('id', 'desc')->get(); ?>
           @if($files)
             @foreach($files as $file)
+            <?php $maskvalue = substr_replace($file->SHA256Argon2, str_repeat('*', strlen($file->SHA256Argon2)-7), 1, -6); ?>
             <tr>
             <td>{{$file->id}}</td>
             <td>{{$file->fileID}}</td>
-            <td>{{$file->SHA256Argon2}}</td>
+            <td>{{$file->fileName}}</td>
+            <td>{{$maskvalue}}</td>
+            <td>{{$file->fileCateg}}</td>
             <td><button type="button" id="{{$file->id}}" class="edit-account-button"> Edit </button></td>
             <td><button type="button" id="{{$file->id}}" class="delete-account-button"> Delete </button></td>
             </tr>

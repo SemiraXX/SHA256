@@ -48,6 +48,7 @@ $(".uploadwrapperdesign").unbind("click").bind("click", function () {
 
 
 
+
 //AJAX FUNCTION TO GET RESULT FROM CONTROLLER
 $(document).on('click', '.result', function(){  
     
@@ -68,7 +69,7 @@ $(document).on('click', '.result', function(){
     }
     else
     {
-      alert("File Empty");
+      alert("Required: Choose file first.");
     }
 
 });

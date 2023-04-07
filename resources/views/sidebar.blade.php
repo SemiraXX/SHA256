@@ -23,7 +23,7 @@ if(session()->has('systemsession'))
             <br>
 
             @if($accountroles->ViewReport == 1)
-            <a class="menulink" href="/"><i class="fa fa-tachometer" aria-hidden="true"></i> &nbsp; Dashboard</a><br><br>
+            <a class="menulink" href="/Dashboard"><i class="fa fa-tachometer" aria-hidden="true"></i> &nbsp; Dashboard</a><br><br>
             @else
             @endif
 
@@ -33,7 +33,7 @@ if(session()->has('systemsession'))
             @endif
 
             @if($accountroles->UploadFile == 1)
-            <a class="menulink" href="/File/Upload"><i class="fa fa-database" aria-hidden="true"></i> &nbsp; Saved Files</a><br><br>
+            <a class="menulink" href="/File/Upload"><i class="fa fa-database" aria-hidden="true"></i> &nbsp; Saved File</a><br><br>
             @else
             @endif
 

@@ -171,7 +171,7 @@ class usercontroller extends Controller
     //LOGOUT
     public function logout(Request $request){
         Session::flush();
-        return redirect()->route('user'); 
+        return redirect()->route('index'); 
     }
 
 

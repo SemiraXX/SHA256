@@ -10,14 +10,52 @@ use Illuminate\Support\Facades\DB;
 
 class checkfilecontroller extends Controller
 {
-    //view checkfile page
-    public function viewcheckfile(Request $request){
+    
+    //view checkfile page as gust
+    public function viewcheckfileasguest(Request $request){
 
         $allfiles = savedfiles::all();
 
         return view('index',
         ['allfiles' => $allfiles]);  
     }
+
+    //view checkfile page as admin
+    public function viewcheckfile(Request $request){
+
+        $allfiles = savedfiles::all();
+
+        return view('checkfile',
+        ['allfiles' => $allfiles]);  
+    }
+
+
+
+
+    //view dashboard
+    public function dashboardview(Request $request){
+
+        $reports = DB::table('tbl_reports')->orderby('id', 'Desc')->get();  
+
+        return view('dashboard',
+        ['reports' => $reports]);  
+    }
+    //sort dashboard
+    public function sortreportsdashboard(Request $request){
+
+        $dateform = $request->input('datefrom');
+        $dateto = $request->input('dateto');
+
+        $reports = DB::table('tbl_reports')
+        ->whereBetween('created_at', [$dateform, $dateto])
+        ->orderby('id', 'Desc')->get();  
+
+        return view('dashboard',
+        ['reports' => $reports,
+        'dateform' => $dateform,
+        'dateto' => $dateto]);  
+    }
+
 
     //upload new file to DB
     public function checkfileaunthenticity(Request $request){
@@ -40,14 +78,14 @@ class checkfilecontroller extends Controller
             #compare code value
             if(password_verify($filehashcode, $originalfile)){
 
-                $result = "<p class='resultlabel1'><strong>Remarks:</strong> File is authentic</p>";
-                $remarks = "File is authentic";
+                $result = "<p class='resultlabel1'><strong>Remarks:</strong> File Authentic</p>";
+                $remarks = "File Authentic";
                 $mark = 1;
             }
             else
             {
-                $result = "<p class='resultlabel2'><strong>Remarks:</strong> File is NOT authentic</p>";
-                $remarks = "File is NOT authentic";
+                $result = "<p class='resultlabel2'><strong>Remarks:</strong> File Fake</p>";
+                $remarks = "File Fake";
                 $mark = 0;
             }
 
@@ -79,6 +117,7 @@ class checkfilecontroller extends Controller
             ]);
             $reports->save();
 
+            $maskvalue = substr_replace($filehashcode, str_repeat('*', strlen($filehashcode)-7), 1, -6);
 
             #validate
             echo "
@@ -92,7 +131,7 @@ class checkfilecontroller extends Controller
                 <strong>F2:</strong> $originalfileID - $originalfilename<br>
                 <br>
                 <strong>Outputs</strong><br>
-                <strong>F1 SHA256:</strong> $filehashcode <br>
+                <strong>F1 SHA256:</strong> $maskvalue <br>
                 <strong>Orginal file ID:</strong> $originalfileID <br>
                 <strong>Admin:</strong> $postedBy <br>
                 <strong>IP Address:</strong> $ip <br>

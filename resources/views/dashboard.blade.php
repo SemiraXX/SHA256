@@ -24,8 +24,20 @@
         <p class="inputlabel">Generated reports from checked file</p>
         <br>
         <div class="input-group teamgroupdiv">
-        <button type="submit" class="add-team-button checkfile"> Check new file </button>
-        <input type="text" class="searchinput" placeholder="Type Here" name="search">
+          <div>
+          <form method="get">
+            <button type="submit" formaction="{{ route('sort.export') }}" class="table-button"> Sort </button>
+            <input type="datetime-local" class="searchinput" name="datefrom" required>
+            <label>To</label>
+            <input type="datetime-local" class="searchinput" name="dateto" required>
+          </form>
+          </div>
+          <div>
+          <button type="submit" class="table-button"> <i class="fa fa-history" aria-hidden="true"></i> Refresh </button>
+          <a href="/Export/Report">
+          <button type="submit" class="table-button"> <i class="fa fa-download" aria-hidden="true"></i> Download to Excel </button>
+          </a>
+          </div>
         </div>
 
      
@@ -33,7 +45,7 @@
         <thead>
             <tr>
             <th>ID</th>
-            <th>File</th>
+            <th style="width:200px">File</th>
             <th>File SHA256</th>
             <th>Original File</th>
             <th>Remarks</th>
@@ -42,13 +54,13 @@
             </tr>
         </thead>
         <tbody>
-        <?php $reports = DB::table('tbl_reports')->orderby('id', 'Desc')->get(); ?>
           @if($reports)
             @foreach($reports as $report)
+            <?php $maskvalue = substr_replace($report->FileSHA256value, str_repeat('*', strlen($report->FileSHA256value)-7), 1, -6); ?>
             <tr>
             <td>{{$report->id}}</td>
             <td>{{$report->FileUploaded}}</td>
-            <td>{{$report->FileSHA256value}}</td>
+            <td>{{$maskvalue}}</td>
             <td>{{$report->OriginalFileID}}</td>
             <td>{{$report->Remarks}}</td>
             <td>{{$report->created_at}}</td>

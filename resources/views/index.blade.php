@@ -10,17 +10,8 @@
 </head>
 <body>
 
-<div class="row">
 
-  <div class="col-sm-2 sidebarcol" style="background-color:#54389E">
-      @include('sidebar')
-  </div>
-
-  <div class="col-sm-10">
-      @include('main')
-  </div>
-
-</div>
+@include('main')
 
 
 </body>
