@@ -22,11 +22,11 @@
         <div class="modalcontent">
             <form action="{{ route('team.new') }}" method="post" enctype="multipart/form-data">
             {{ csrf_field() }}
-            <p class="inputlabel">Username (AutGen)</p>
-            <input type="text" class="inputclass" value="<?php echo $SetUserName; ?>" name="UserName" readonly>
+            <p class="inputlabel">Username</p>
+            <input type="text" class="inputclass" value="<?php echo $SetUserName; ?>" name="UserName" required>
             <br><br>
-            <p class="inputlabel">Set Password</p>
-            <input type="text" class="inputclass" placeholder="Type Here" name="Password">
+            <p class="inputlabel">Set Default Password</p>
+            <input type="text" class="inputclass" placeholder="Type Here" name="Password" required>
             <br><br>
             <p class="inputlabel">Set Cetegory</p>
             <select class="inputclass" id="originalfile" name="Category">

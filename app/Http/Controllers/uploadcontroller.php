@@ -24,6 +24,7 @@ class uploadcontroller extends Controller
         $fileCateg = $request->input('fileCateg');
         $SHA256 = $request->input('filehashcode');
     
+        
         #create uniquefile ID
         $lastID = DB::table('tbl_saved_files')->orderBy('id', 'DESC')->first();
             if($lastID)
@@ -36,10 +37,6 @@ class uploadcontroller extends Controller
                 $fileID = "FILE_1";
             }
 
-        //to transfer file
-        $mainuploadedfile = $request->file('mainfile'); 
-        $uploadedfileName = $fileID.'.'.$mainuploadedfile->extension();  
-        $mainuploadedfile->move(public_path('/files'), $uploadedfileName);
 
 
         //check if already exist or not
@@ -71,8 +68,14 @@ class uploadcontroller extends Controller
         }
         
 
+        //to transfer file
+        $mainuploadedfile = $request->file('mainfile'); 
+        $uploadedfileName = $fileID.'.'.$mainuploadedfile->extension();  
+        $mainuploadedfile->move(public_path('/files'), $uploadedfileName);
+
+
         #THIS IS FOR DSA ALGO
-        $data = "/files".$uploadedfileName;
+        $data = "files/".$uploadedfileName;
 
 
         $new_key_pair = openssl_pkey_new(array(
@@ -84,8 +87,12 @@ class uploadcontroller extends Controller
         $details = openssl_pkey_get_details($new_key_pair);
         $public_key_pem = $details['key'];
 
+
+        $file_data = file_get_contents($data);
+
+
         //create signature
-        openssl_sign($data, $signature, $private_key_pem, OPENSSL_ALGO_SHA256);
+        openssl_sign($file_data, $signature, $private_key_pem, OPENSSL_ALGO_SHA256);
 
 
         //save for later
@@ -97,7 +104,7 @@ class uploadcontroller extends Controller
         #use Argon2 to secure hash code
         $Argon2 = password_hash($SHA256, PASSWORD_ARGON2ID);
 
-        
+
         //save to database
         $savedfiles = new savedfiles([
                 'FileID' => $fileID,
@@ -126,5 +133,54 @@ class uploadcontroller extends Controller
         return back()->with('success', "File Uploaded!");
 
         
+    }
+
+
+    //file delete
+    public function filedelete(Request $request){
+        
+        $id = $request->input('id');
+
+        //check if account exist
+        $file = DB::table('tbl_saved_files')->where('id', $id)->first();
+        if($file)
+        {
+
+            #get user name
+            if(session()->has('systemsession'))
+            {
+                $account = DB::table('tbl_useraccounts')->where('id', '=', session('systemsession'))->first();
+                $postedBy = $account->usr_name;
+            }
+            else
+            {
+                $postedBy = "000000000";
+            }
+
+            //remove pem keys
+            unlink("openssl/".$file->PrivateKey);
+            unlink("openssl/".$file->PublicKey);
+            unlink("openssl/".$file->Signature);
+            
+            #actiontrail
+            $actiontrail = new actiontrail([
+                'user_id' => $postedBy,
+                'action_taken' => "Removed ".$file->FileID. " from saved file",
+                'ip_add' => $request->ip(),
+                'http_browser' => $request->userAgent()
+            ]);
+            $actiontrail->save();
+
+            DB::table('tbl_saved_files')
+            ->where('id', $id)
+            ->delete();
+
+            return back()->with('success', "File Removed!");
+        }
+        else
+        {
+            return back()->with('notes', "File not found.");
+        }
+
     }
 }

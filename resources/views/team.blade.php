@@ -25,17 +25,17 @@
         <br>
         <div class="input-group teamgroupdiv">
         <button type="submit" class="add-team-button"><i class="fa fa-user-plus" aria-hidden="true"></i> Create new account</button>
-        <input type="text" class="searchinput" placeholder="Type Here" name="search">
+        <input type="text" class="searchinput" onkeyup="myFunction()" id="myInput" placeholder="Seach Category Name" name="search">
         </div>
 
      
-        <table class="table-main">
+        <table class="table-main" id="myTable">
         <thead>
             <tr>
             <th>ID</th>
             <th>Username</th>
-            <th>Cat ID</th>
-            <th>Cat Name</th>
+            <th>Category ID</th>
+            <th>Category Name</th>
             <th>Description</th>
             <th>Date Created</th>
             <th>Last Modified</th>
@@ -48,17 +48,33 @@
           @if($accounts)
             @foreach($accounts as $account)
             <?php $categ = DB::table('tbl_category')->where('id', $account->cat_id)->first(); ?>
-            <tr>
-            <td>{{$account->id}}</td>
-            <td>{{$account->usr_name}}</td>
-            <td>{{$account->cat_id}}</td>
-            <td>{{$categ->cat_name}}</td>
-            <td>{{$categ->cat_desc}}</td>
-            <td>{{$account->created_at}}</td>
-            <td>{{$account->updated_at}}</td>
-            <td><button type="button" id="{{$account->id}}" class="edit-account-button"> Edit </button></td>
-            <td><button type="button" id="{{$account->id}}" class="delete-account-button"> Delete </button></td>
-            </tr>
+
+              @if($categ)
+              <tr>
+              <td>{{$account->id}}</td>
+              <td>{{$account->usr_name}}</td>
+              <td>{{$account->cat_id}}</td>
+              <td>{{$categ->cat_name}}</td>
+              <td>{{$categ->cat_desc}}</td>
+              <td>{{$account->created_at}}</td>
+              <td>{{$account->updated_at}}</td>
+              <td><button type="button" id="{{$account->id}}" class="edit-account-button"> Edit </button></td>
+              <td><button type="button" id="{{$account->id}}" class="delete-account-button"> Delete </button></td>
+              </tr>
+              @else
+              <tr>
+              <td>{{$account->id}}</td>
+              <td>{{$account->usr_name}}</td>
+              <td>{{$account->cat_id}}</td>
+              <td style="color:red">- <i class="fa fa-exclamation" aria-hidden="true"></i> not found-</td>
+              <td style="color:red">- <i class="fa fa-exclamation" aria-hidden="true"></i> not found-</td>
+              <td>{{$account->created_at}}</td>
+              <td>{{$account->updated_at}}</td>
+              <td><button type="button" id="{{$account->id}}" class="edit-account-button"> Edit </button></td>
+              <td><button type="button" id="{{$account->id}}" class="delete-account-button"> Delete </button></td>
+              </tr>
+              @endif
+
             @endforeach
           @else
           @endif
@@ -73,6 +89,7 @@
 
 @include('modals.team')
 <script src="/js/modal.js"></script>
+<script src="/js/search.js"></script>
 
 </body>
 </html>

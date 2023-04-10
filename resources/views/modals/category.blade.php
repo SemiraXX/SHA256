@@ -25,7 +25,7 @@
               <div class="col-sm-6">
                   <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="ViewReport" value="1">
-                    <label class="inputlabel">Manage Reports</label>
+                    <label class="inputlabel">Reports</label>
                   </div>
                   <div class="form-check" style="display:none">
                     <input type="checkbox" class="form-check-input" name="DeleteReport" value="1">
@@ -37,13 +37,13 @@
                   </div>
                   <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="UploadFile" value="1">
-                    <label class="inputlabel">Manage Saved Files</label>
+                    <label class="inputlabel">Save File</label>
                   </div>
               </div>
               <div class="col-sm-6">
                   <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="ViewActionTrail" value="1">
-                    <label class="inputlabel">View Action Trail</label>
+                    <label class="inputlabel">Action Trail</label>
                   </div>
                   <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="ViewTeams" value="1">
@@ -65,9 +65,9 @@
                     <input type="checkbox" class="form-check-input" name="Addnewcategory" value="1">
                     <label class="inputlabel">Add new category</label>
                   </div>
-                  <div class="form-check" style="display:none">
+                  <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="Removecategory" value="1">
-                    <label class="inputlabel">Modify category</label>
+                    <label class="inputlabel">Manage Categories</label>
                   </div>
               </div>
             </div>

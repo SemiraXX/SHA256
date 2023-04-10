@@ -243,12 +243,26 @@ class usercontroller extends Controller
                 <br><br>
                 <button type="submit" class="loginbutton">Save Changes</button>
             
-            ';
+                    ';
 
             }
             else
             {
-                echo "ACCOUNT CATEGORY ERROR";
+                echo'
+                <p class="inputlabel">Username (Read Only)</p>
+                <input type="text" class="inputclass" value="'.$ifuserexist->usr_name.'" name="UserName" readonly>
+                <br><br>
+                <p class="inputlabel">Set Cetegory</p>
+                <select class="inputclass" name="Category">';
+                foreach($ALLCATEG as $category)
+                {
+                    echo '<option value="'.$category->id.'">'.$category->cat_name.'</option>';
+                }
+                echo'
+                </select>
+                <input type="hidden" class="inputclass" value="'.$ifuserexist->id.'" name="id">
+                <br><br>
+                <button type="submit" class="loginbutton">Save Changes</button>';
             }
 
             
@@ -326,7 +340,7 @@ class usercontroller extends Controller
             if($accountcateg)
             {
                 echo'
-                <form action="/Process/Delete" method="get">
+                <form action="/Process/Team" method="get">
                 <p class="inputlabel">Username (Read Only)</p>
                 <input type="text" class="inputclass" value="'.$ifuserexist->usr_name.'" name="UserName" readonly>
                 <br><br>
@@ -334,7 +348,7 @@ class usercontroller extends Controller
                 <input type="text" class="inputclass" value="'.$accountcateg->cat_name.'" name="Cetegory" readonly>
                 <input type="hidden" class="inputclass" value="'.$ifuserexist->id.'" name="id">
                 <br><br><br>
-                <p class="inputlabel">Note: You cannot undo once deleted</p>
+                <p class="noteinputlabel">Note: You cannot undo once deleted.</p>
                 <button type="submit" class="redbutton">Delete</button>
                 </form>
             
@@ -343,7 +357,17 @@ class usercontroller extends Controller
             }
             else
             {
-                echo "ACCOUNT CATEGORY ERROR";
+                echo'
+                <form action="/Process/Team" method="get">
+                <p class="inputlabel">Username (Read Only)</p>
+                <input type="text" class="inputclass" value="'.$ifuserexist->usr_name.'" name="UserName" readonly>
+                <br><br>
+                <input type="hidden" class="inputclass" value="'.$ifuserexist->id.'" name="id">
+                <p class="noteinputlabel">Note: You cannot undo once deleted.</p>
+                <button type="submit" class="redbutton">Delete</button>
+                </form>
+            
+            ';
             }
 
             
@@ -395,6 +419,103 @@ class usercontroller extends Controller
         else
         {
             return back()->with('notes', "Account not found.");
+        }
+
+    }
+
+    //change password
+    public function pwchange(Request $request){
+        
+        $current = $request->input('current');
+        $newpas = $request->input('newpas');
+
+        #get user name
+        if(session()->has('systemsession'))
+        {
+            $account = DB::table('tbl_useraccounts')->where('id', '=', session('systemsession'))->first();
+            if(Hash::check($current, $account->pwd))
+            {
+                DB::table('tbl_useraccounts')
+                ->where('id', '=', session('systemsession'))
+                ->update(
+                    array(
+                        'pwd' => bcrypt($newpas),
+                        'updated_at' => NOW()
+                    ));
+
+                #actiontrail
+                $actiontrail = new actiontrail([
+                    'user_id' => $account->usr_name,
+                    'action_taken' => $account->usr_name. " changed password",
+                    'ip_add' => $request->ip(),
+                    'http_browser' => $request->userAgent()
+                ]);
+                $actiontrail->save();
+
+                //logs trail
+                $logs = new logs([
+                    'username' => $account->usr_name,
+                    'issuccess' => 1,
+                    'isfailed' => 0,
+                    'remarks' => "Changed Password",
+                    'ip_add' => $request->ip(),
+                    'http_browser' => $request->userAgent()
+                ]);
+                $logs->save();
+
+                return back()->with('success', "Password Changed!");
+            }
+            else
+            {
+                return back()->with('success', "Current password not match");
+            }
+        }
+        else
+        {
+            return back()->with('success', "Account not found.");
+        }
+    }
+
+
+    //category delete
+    public function categorydelete(Request $request){
+        
+        $id = $request->input('id');
+
+        //check if account exist
+        $category = DB::table('tbl_category')->where('id', $id)->first();
+        if($category)
+        {
+
+            #get user name
+            if(session()->has('systemsession'))
+            {
+                $account = DB::table('tbl_useraccounts')->where('id', '=', session('systemsession'))->first();
+                $postedBy = $account->usr_name;
+            }
+            else
+            {
+                $postedBy = "000000000";
+            }
+
+            #actiontrail
+            $actiontrail = new actiontrail([
+                'user_id' => $postedBy,
+                'action_taken' => "Removed ".$category ->cat_name. " category from list",
+                'ip_add' => $request->ip(),
+                'http_browser' => $request->userAgent()
+            ]);
+            $actiontrail->save();
+
+            DB::table('tbl_category')
+            ->where('id', $id)
+            ->delete();
+
+            return back()->with('success', "Category Removed!");
+        }
+        else
+        {
+            return back()->with('notes', "Category not found.");
         }
 
     }

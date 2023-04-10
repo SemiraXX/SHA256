@@ -88,3 +88,10 @@ function showPage() {
  $(document).on('click', '.checkfile', function(){  
      window.location.replace("/Check/File");      
  });
+
+
+
+ //open categ modal
+$(document).on('click', '.changepassword', function(){  
+     $('#PASSWORDUPDATE').modal('show');        
+ });

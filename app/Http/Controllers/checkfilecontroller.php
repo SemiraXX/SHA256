@@ -71,7 +71,7 @@ class checkfilecontroller extends Controller
     }
 
 
-    //upload new file to DB
+    //check file
     public function checkfileaunthenticity(Request $request){
 
         $mainfile = $request->input('mainfile');
@@ -80,17 +80,18 @@ class checkfilecontroller extends Controller
         
         $fileID = uniqid();
          
+
         //tempo transfer file to folder
         $mainuploadedfile = $request->file('mainfile'); 
         $uploadedfileName = $fileID.'.'.$mainuploadedfile->extension();  
-        $mainuploadedfile->move(public_path(), $uploadedfileName);
+        $mainuploadedfile->move(public_path("/saved"), $uploadedfileName);
 
     
         // Path to the file to be verified
-        $file_path = $uploadedfileName;
+        $file_path = "saved/".$uploadedfileName;
         $fileSHA256 =  hash_file('sha256', $file_path);
-
         $MYDATA = file_get_contents($file_path);
+
 
         #check if orinal file exist in DB
         $allfiles = DB::table('tbl_saved_files')->where('FileID', $originalfile)->first();
@@ -111,39 +112,25 @@ class checkfilecontroller extends Controller
             $verified = openssl_verify($MYDATA, $signature, $public_key, OPENSSL_ALGO_SHA256);
 
 
-            /*if ($verified == 1) {
+            if ($verified == 1) {
 
                 $result = "<p class='resultlabel1'><strong>Remarks:</strong> File Authentic</p>";
                 $remarks = "File Authentic";
                 $mark = 1;
             } elseif ($verified == 0) {
-                $result = "<p class='resultlabel2'><strong>Remarks:</strong> File Fake--1</p>";
-                $remarks = "File Fake --1";
+                $result = "<p class='resultlabel2'><strong>Remarks:</strong> File Fake</p>";
+                $remarks = "File Fake";
                 $mark = 0;
             } else {
                 $result = "<p class='resultlabel2'><strong>Remarks:</strong> OpenSSL Error</p>";
                 $remarks = " OpenSSL Error";
                 $mark = 0;
-            }*/
+            }
 
 
             // Free the key from memory
             openssl_free_key($public_key);
-
-            #compare code value
-            if(password_verify($filehashcode, $originalfilehash)){
-
-                $result = "<p class='resultlabel1'><strong>Remarks:</strong> File Authentic</p>";
-                $remarks = "File Authentic";
-                $mark = 1;
-            }
-            else
-            {
-                $result = "<p class='resultlabel2'><strong>Remarks:</strong> File Fake</p>";
-                $remarks = "File Fake";
-                $mark = 0;
-            }
-
+            unlink($file_path);
 
 
             #get user name
@@ -154,7 +141,7 @@ class checkfilecontroller extends Controller
             }
             else
             {
-                $postedBy = "000000000";
+                $postedBy = "Guest";
             }
 
 

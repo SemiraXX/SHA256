@@ -26,9 +26,9 @@
         <br>
         <div class="input-group teamgroupdiv">
         <button type="submit" class="upload-fille-button"><i class="fa fa-plus" aria-hidden="true"></i> Upload New</button>
-        <input type="text" class="searchinput" placeholder="Type Here" name="search">
+        <input type="text" class="searchinput" onkeyup="myFunction()" id="myInput" placeholder="Search File Name" name="myInput">
         </div>
-        <table class="table-main">
+        <table class="table-main" id="myTable">
         <thead>
             <tr>
             <th>ID</th>
@@ -50,7 +50,12 @@
             <td>{{$file->FileName}}</td>
             <td>{{$maskvalue}}</td>
             <td>{{$file->FileCateg}}</td>
-            <td><button type="button" id="{{$file->id}}" class="delete-account-button"> Delete </button></td>
+            <td>
+            <form action="/File/Delete" method="get">
+              <input type="hidden" name="id" value="{{$file->id}}">
+              <button type="submit" class="delete-account-button"> Delete </button>
+              </form>
+            </td>
             </tr>
             @endforeach
           @else
@@ -70,6 +75,7 @@
 @include('modals.upload')
 <script src="/js/modal.js"></script>
 <script src="/js/sha256.js"></script>
+<script src="/js/search3.js"></script>
 
 </body>
 </html>

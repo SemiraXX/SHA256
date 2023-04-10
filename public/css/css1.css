@@ -72,6 +72,9 @@ body{
     font-family: 'Montserrat', sans-serif;
     font-size: 30px;
     color: #AB8EED;
+}.noteinputlabel{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
 }.inputlabel{
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;

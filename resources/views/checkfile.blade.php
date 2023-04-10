@@ -38,7 +38,7 @@
         <br><br>
         <hr>
         @if(Session::get('dataresult'))
-          <?php echo htmlentities(Session::get('dataresult'));?>
+          <?php echo html_entity_decode(Session::get('dataresult'));?>
         @endif
         <div id="responsedata1"></div>
     </div>

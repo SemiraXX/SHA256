@@ -39,7 +39,7 @@ Route::post('/Check',[checkfilecontroller::class,'checkfileaunthenticity'])->nam
 
 //post new file
 Route::post('/upload',[uploadcontroller::class,'uploadfile'])->name('file.upload');
-
+Route::get('/File/Delete',[uploadcontroller::class,'filedelete'])->name('file.delete');
 
 //login
 Route::get('/Login', function () {return view('login');})->name('user');
@@ -56,7 +56,8 @@ Route::post('/Create/Team',[usercontroller::class,'addnewteam'])->name('team.new
 Route::get('/Edit/Team',[usercontroller::class,'editaccount'])->name('team.edit');
 Route::post('/Process/Edit',[usercontroller::class,'processupdate'])->name('process.edit');
 Route::get('/Delete/Team',[usercontroller::class,'deleteaccount'])->name('team.delete');
-Route::get('/Process/Delete',[usercontroller::class,'processdelete'])->name('process.delete');
+Route::get('/Process/Team',[usercontroller::class,'processdelete'])->name('team.delete');
+
 
 //Categories
 Route::get('/Categories', function () {return view('category');});
@@ -65,6 +66,8 @@ Route::post('/Create/Category',[usercontroller::class,'addnewcategory'])->name('
 
 //profile
 Route::get('/Profile',function () {return view('profile');})->name('profile');
+Route::post('/Change/Password',[usercontroller::class,'pwchange'])->name('pw.change');
+Route::get('/Categ/Delete',[usercontroller::class,'categorydelete'])->name('categ.delete');
 
 //flus
 Route::get('/Logout',[usercontroller::class,'logout']);

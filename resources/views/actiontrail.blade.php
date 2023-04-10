@@ -24,10 +24,10 @@
         <p class="inputlabel">List of all movements accross the whole system.</p>
         <br>
         <div class="input-group teamgroupdiv">
-        <input type="text" class="searchinput" placeholder="Search Username" name="search">
+        <input type="text" class="searchinput"  onkeyup="myFunction()" id="myInput" placeholder="Search Username" name="search">
         </div>
 
-        <table class="table-main">
+        <table class="table-main" id="myTable">
         <thead>
             <tr>
             <th>ID</th>
@@ -38,7 +38,7 @@
             </tr>
         </thead>
         <tbody>
-        <?php $actions = DB::table('tbl_action_trail')->orderBy('id','desc')->get(); ?>
+        <?php $actions = DB::table('tbl_action_trail')->orderBy('id','desc')->limit(20)->get(); ?>
           @if($actions)
             @foreach($actions as $action)
             <tr>
@@ -62,6 +62,7 @@
 
 @include('modals.team')
 <script src="/js/modal.js"></script>
+<script src="/js/search3.js"></script>
 
 </body>
 </html>

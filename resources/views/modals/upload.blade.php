@@ -18,10 +18,10 @@
           <input type="hidden" class="inputclass" id="filehashcode" name="filehashcode">
           <br><br>
           <p class="inputlabel">File Name</p>
-          <input type="text" class="inputclass" placeholder="Type Here" name="fileName">
+          <input type="text" class="inputclass" placeholder="Type Here" id="fileName" name="fileName" readonly>
           <br><br>
           <p class="inputlabel">File Category</p>
-          <input type="text" class="inputclass" placeholder="Type Here" name="fileCateg">
+          <input type="text" class="inputclass" placeholder="Type Here" id="fileCateg" name="fileCateg" readonly>
           <br><br>
           <button type="submit" class="checkbtn">Upload</button>
           <br><br>

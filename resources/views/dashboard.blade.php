@@ -34,14 +34,14 @@
           <div>
             @if(!empty($dateform) && !empty($dateto))
             <input type="datetime-local" class="searchinput" name="datefrom" value="{{$dateform}}">
-            <label>To</label>
+            <label> - </label>
             <input type="datetime-local" class="searchinput" name="dateto" value="{{$dateto}}">
             @else
             <input type="datetime-local" class="searchinput" name="datefrom">
-            <label>To</label>
+            <label> - </label>
             <input type="datetime-local" class="searchinput" name="dateto">
             @endif
-            <button type="submit" formaction="{{ route('sort.export') }}" class="table-button"> Sort List </button>
+            <button type="submit" formaction="{{ route('sort.export') }}" class="table-button"> Filter </button>
           </div>
         </div></form>
 
@@ -54,6 +54,7 @@
             <th>File SHA256</th>
             <th>Original File</th>
             <th>Remarks</th>
+            <th>Admin</th>
             <th style="width:100px">Date</th>
             <th> </th>
             </tr>
@@ -68,6 +69,7 @@
             <td>{{$maskvalue}}</td>
             <td>{{$report->OriginalFileID}}</td>
             <td>{{$report->Remarks}}</td>
+            <td>{{$report->Admin}}</td>
             <td>{{$report->created_at}}</td>
             <td><button type="button" id="{{$report->id}}" class="view-report-button"> view </button></td>
             </tr>

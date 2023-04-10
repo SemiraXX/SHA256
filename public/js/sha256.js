@@ -9,8 +9,11 @@ function hashfile() {
       }).then(function(result) {
         result = new Uint8Array(result);
         var resulthex = Uint8ArrayToHexString(result);
-        //divresult.innerText = 'result: ' + resulthex;
+        var fileName = document.getElementById('fileselector').files[0].name;
+        var ext = document.getElementById('fileselector').files[0].name;
         document.getElementById("filehashcode").value = resulthex;
+        document.getElementById("fileName").value = fileName.split('.').slice(0, -1).join('.');
+        document.getElementById("fileCateg").value = "."+fileName.split('.')[1];;
       });
 
 }
