@@ -37,21 +37,19 @@
             <th>Hash Code</th>
             <th>File Type</th>
             <th style="width:80px;"></th>
-            <th style="width:80px;"></th>
             </tr>
         </thead>
         <tbody>
-        <?php $files = DB::table('tbl_savedfiles')->orderby('id', 'desc')->get(); ?>
+        <?php $files = DB::table('tbl_saved_files')->orderby('id', 'desc')->get(); ?>
           @if($files)
             @foreach($files as $file)
-            <?php $maskvalue = substr_replace($file->SHA256Argon2, str_repeat('*', strlen($file->SHA256Argon2)-7), 1, -6); ?>
+            <?php $maskvalue = substr_replace($file->HashValue, str_repeat('*', strlen($file->HashValue)-7), 1, -6); ?>
             <tr>
             <td>{{$file->id}}</td>
-            <td>{{$file->fileID}}</td>
-            <td>{{$file->fileName}}</td>
+            <td>{{$file->FileID}}</td>
+            <td>{{$file->FileName}}</td>
             <td>{{$maskvalue}}</td>
-            <td>{{$file->fileCateg}}</td>
-            <td><button type="button" id="{{$file->id}}" class="edit-account-button"> Edit </button></td>
+            <td>{{$file->FileCateg}}</td>
             <td><button type="button" id="{{$file->id}}" class="delete-account-button"> Delete </button></td>
             </tr>
             @endforeach

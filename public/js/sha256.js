@@ -48,20 +48,18 @@ $(".uploadwrapperdesign").unbind("click").bind("click", function () {
 
 
 
-
 //AJAX FUNCTION TO GET RESULT FROM CONTROLLER
 $(document).on('click', '.result', function(){  
     
-    var filehashcode = $("#filehashcode").val();
+    var mainfile = $("#mainfile").val();
     var originalfile = $("#originalfile").val();
-    var fileselector = $("#fileselector").val().split('\\').pop();
 
     if(filehashcode != '')  
     {  
          $.ajax({  
               url:"/Check",  
               method:"Get",  
-              data:{filehashcode:filehashcode,originalfile:originalfile,fileselector:fileselector},  
+              data:{mainfile:mainfile,originalfile:originalfile},  
               success:function(data){  
                    $('#responsedata1').html(data);
               }  
@@ -74,5 +72,21 @@ $(document).on('click', '.result', function(){
 
 });
 
+
+$("form#files").submit(function(){
+
+  var formData = new FormData($(this)[0]);
+
+  $.ajax({
+      url: "/Check",
+      type: 'Post',
+      data: formData,
+      success: function (data) {
+        $('#responsedata1').html(data);
+      }
+  });
+
+  return false;
+});
 
 

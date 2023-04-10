@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\users;
 use App\Models\category;
 use App\Models\roles;
+use App\Models\logs;
 use App\Models\actiontrail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -139,7 +140,7 @@ class usercontroller extends Controller
 
         $this->validate($request, [
             'UserName' => 'required',
-	        'Password' => 'required|min:8'
+	        'Password' => 'required'
         ]);
 
         $UserName = $request->input('UserName');
@@ -153,16 +154,50 @@ class usercontroller extends Controller
             {
                 $usersessionholderID = $ifuserexist->id;
                 $request->session()->put('systemsession', $usersessionholderID);
+
+                //logs trail
+                $logs = new logs([
+                    'username' => $ifuserexist->usr_name,
+                    'issuccess' => 1,
+                    'isfailed' => 0,
+                    'remarks' => "Successful Logged",
+                    'ip_add' => $request->ip(),
+                    'http_browser' => $request->userAgent()
+                ]);
+                $logs->save(); 
+
                 return redirect()->route('profile'); 
             }
             else
             {
-                return back()->with('notes', "Password not match.");
+                //logs trail
+                $logs = new logs([
+                    'username' => $UserName,
+                    'issuccess' => 0,
+                    'isfailed' => 1,
+                    'remarks' => "Password not match",
+                    'ip_add' => $request->ip(),
+                    'http_browser' => $request->userAgent()
+                ]);
+                $logs->save();
+
+                return back()->with('notes', "Invalid username or password.");
             }
         }
         else
         {
-            return back()->with('notes', "Account not found.");
+            //logs trail
+            $logs = new logs([
+                'username' => $UserName,
+                'issuccess' => 0,
+                'isfailed' => 1,
+                'remarks' => "Account not found",
+                'ip_add' => $request->ip(),
+                'http_browser' => $request->userAgent()
+            ]);
+            $logs->save();
+
+            return back()->with('notes', "Invalid username or password.");
         }
         
     }

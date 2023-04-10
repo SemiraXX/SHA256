@@ -23,22 +23,27 @@
         <p class="pagetitle">Reports</p>
         <p class="inputlabel">Generated reports from checked file</p>
         <br>
+        <form method="get"> 
         <div class="input-group teamgroupdiv">
           <div>
-          <form method="get">
-            <button type="submit" formaction="{{ route('sort.export') }}" class="table-button"> Sort </button>
-            <input type="datetime-local" class="searchinput" name="datefrom" required>
-            <label>To</label>
-            <input type="datetime-local" class="searchinput" name="dateto" required>
-          </form>
+          <a href="/Dashboard">
+          <button type="button" class="table-button"> <i class="fa fa-history" aria-hidden="true"></i> Refresh </button>
+          </a>
+          <button type="submit" formaction="{{ route('direct.export') }}" class="table-button"> <i class="fa fa-download" aria-hidden="true"></i> Download to Excel </button>
           </div>
           <div>
-          <button type="submit" class="table-button"> <i class="fa fa-history" aria-hidden="true"></i> Refresh </button>
-          <a href="/Export/Report">
-          <button type="submit" class="table-button"> <i class="fa fa-download" aria-hidden="true"></i> Download to Excel </button>
-          </a>
+            @if(!empty($dateform) && !empty($dateto))
+            <input type="datetime-local" class="searchinput" name="datefrom" value="{{$dateform}}">
+            <label>To</label>
+            <input type="datetime-local" class="searchinput" name="dateto" value="{{$dateto}}">
+            @else
+            <input type="datetime-local" class="searchinput" name="datefrom">
+            <label>To</label>
+            <input type="datetime-local" class="searchinput" name="dateto">
+            @endif
+            <button type="submit" formaction="{{ route('sort.export') }}" class="table-button"> Sort List </button>
           </div>
-        </div>
+        </div></form>
 
      
         <table class="table-main">

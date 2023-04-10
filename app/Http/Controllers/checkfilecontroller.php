@@ -35,6 +35,10 @@ class checkfilecontroller extends Controller
     //view dashboard
     public function dashboardview(Request $request){
 
+        //to clear prev session
+        session()->forget('datefrom');
+        session()->forget('dateto');
+
         $reports = DB::table('tbl_reports')->orderby('id', 'Desc')->get();  
 
         return view('dashboard',
@@ -42,6 +46,16 @@ class checkfilecontroller extends Controller
     }
     //sort dashboard
     public function sortreportsdashboard(Request $request){
+
+        //to clear prev session
+        session()->forget('datefrom');
+        session()->forget('dateto');
+
+        //require field value
+        $this->validate($request, [
+            'datefrom' => 'required',
+	        'dateto' => 'required'
+        ]);
 
         $dateform = $request->input('datefrom');
         $dateto = $request->input('dateto');
@@ -60,23 +74,64 @@ class checkfilecontroller extends Controller
     //upload new file to DB
     public function checkfileaunthenticity(Request $request){
 
-        #get file hash value
-        $filehashcode = $request->input('filehashcode');
-
-        #decode original file from argon2 to sha256
+        $mainfile = $request->input('mainfile');
         $originalfile = $request->input('originalfile');
-        $fileselector = $request->input('fileselector');
+        $filehashcode = $request->input('filehashcode');
         
+        $fileID = uniqid();
+         
+        //tempo transfer file to folder
+        $mainuploadedfile = $request->file('mainfile'); 
+        $uploadedfileName = $fileID.'.'.$mainuploadedfile->extension();  
+        $mainuploadedfile->move(public_path(), $uploadedfileName);
+
+    
+        // Path to the file to be verified
+        $file_path = $uploadedfileName;
+        $fileSHA256 =  hash_file('sha256', $file_path);
+
+        $MYDATA = file_get_contents($file_path);
 
         #check if orinal file exist in DB
-        $allfiles = DB::table('tbl_savedfiles')->where('SHA256Argon2', $originalfile)->first();
+        $allfiles = DB::table('tbl_saved_files')->where('FileID', $originalfile)->first();
         if($allfiles)
         {
-            $originalfilename = $allfiles->fileName;
-            $originalfileID = $allfiles->fileID;
+            $originalfilename = $allfiles->FileName;
+            $originalfileID = $allfiles->FileID;
+            $originalfilehash = $allfiles->HashValue;
+
+            // Path to the signature file
+            $signature_path = "openssl/".$allfiles->Signature;
+            $public_key_path = "openssl/".$allfiles->PublicKey;
+            // Read the contents of the file and the signature
+            $signature = file_get_contents($signature_path);
+            // Get the public key
+            $public_key = openssl_get_publickey(file_get_contents($public_key_path));
+            // Verify the signature
+            $verified = openssl_verify($MYDATA, $signature, $public_key, OPENSSL_ALGO_SHA256);
+
+
+            /*if ($verified == 1) {
+
+                $result = "<p class='resultlabel1'><strong>Remarks:</strong> File Authentic</p>";
+                $remarks = "File Authentic";
+                $mark = 1;
+            } elseif ($verified == 0) {
+                $result = "<p class='resultlabel2'><strong>Remarks:</strong> File Fake--1</p>";
+                $remarks = "File Fake --1";
+                $mark = 0;
+            } else {
+                $result = "<p class='resultlabel2'><strong>Remarks:</strong> OpenSSL Error</p>";
+                $remarks = " OpenSSL Error";
+                $mark = 0;
+            }*/
+
+
+            // Free the key from memory
+            openssl_free_key($public_key);
 
             #compare code value
-            if(password_verify($filehashcode, $originalfile)){
+            if(password_verify($filehashcode, $originalfilehash)){
 
                 $result = "<p class='resultlabel1'><strong>Remarks:</strong> File Authentic</p>";
                 $remarks = "File Authentic";
@@ -89,6 +144,8 @@ class checkfilecontroller extends Controller
                 $mark = 0;
             }
 
+
+
             #get user name
             if(session()->has('systemsession'))
             {
@@ -100,14 +157,16 @@ class checkfilecontroller extends Controller
                 $postedBy = "000000000";
             }
 
+
+
             $date = NOW();
             $ip = $request->ip();
             $browser = $request->userAgent();
 
             #this is save report in DB
             $reports = new reports([
-                'FileUploaded' => $fileselector,
-                'FileSHA256value' => $filehashcode,
+                'FileUploaded' => $uploadedfileName,
+                'FileSHA256value' => $fileSHA256,
                 'OriginalFileID'=> $originalfileID,
                 'Admin' => $postedBy,
                 'Ip_add' => $ip,
@@ -117,17 +176,17 @@ class checkfilecontroller extends Controller
             ]);
             $reports->save();
 
-            $maskvalue = substr_replace($filehashcode, str_repeat('*', strlen($filehashcode)-7), 1, -6);
+            $maskvalue = substr_replace($fileSHA256, str_repeat('*', strlen($fileSHA256)-7), 1, -6);
 
             #validate
-            echo "
+            $date1 = "
             
             <div class='resultscontainer'>
 
                 <p class='inputlabel2'>
                 <strong>Results Date:</strong> $date <br><br>
                 <strong>Inputs</strong><br>
-                <strong>F1:</strong> $fileselector <br>
+                <strong>F1:</strong> $uploadedfileName <br>
                 <strong>F2:</strong> $originalfileID - $originalfilename<br>
                 <br>
                 <strong>Outputs</strong><br>
@@ -143,14 +202,17 @@ class checkfilecontroller extends Controller
             </div>
             ";
 
+           
             #actiontrail
             $actiontrail = new actiontrail([
                 'user_id' => $postedBy,
-                'action_taken' => "Check ".$fileselector. " file aunthenticity to ".$originalfileID. " with remarks: (".$remarks.")",
+                'action_taken' => "Check ".$uploadedfileName. " file aunthenticity to ".$originalfileID. " with remarks: (".$remarks.")",
                 'ip_add' => $ip,
                 'http_browser' => $browser
             ]);
             $actiontrail->save(); 
+
+            return back()->with('dataresult', $date1);
 
             #end
 

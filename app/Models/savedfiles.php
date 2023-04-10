@@ -9,14 +9,17 @@ class savedfiles extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_savedfiles';
+    protected $table = 'tbl_saved_files';
 
     protected $fillable = [
-        'fileID',
-        'fileName',
-        'fileCateg',
-        'SHA256Argon2',
-        'postedBy',
-        'postedDate'
+        'FileID',
+        'FileName',
+        'FileCateg',
+        'HashValue',
+        'PrivateKey',
+        'PublicKey',
+        'Signature',
+        'PostedBy',
+        'PostedDate'
     ];
 }

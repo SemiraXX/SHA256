@@ -34,7 +34,7 @@ Route::get('/Sort/Report',[checkfilecontroller::class,'sortreportsdashboard'])->
 
 //get hash code using ajax
 Route::get('/HashCode', function () {return view('gethashcode');});
-Route::get('/Check',[checkfilecontroller::class,'checkfileaunthenticity'])->name('proceed.check');
+Route::post('/Check',[checkfilecontroller::class,'checkfileaunthenticity'])->name('proceed.check');
 
 
 //post new file
